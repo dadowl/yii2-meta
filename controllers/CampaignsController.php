@@ -8,6 +8,8 @@ use app\models\CampaignsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\Pagination;
+use yii\data\ActiveDataProvider;
 
 /**
  * CampaignsController implements the CRUD actions for Campaigns model.
