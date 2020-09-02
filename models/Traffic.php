@@ -40,7 +40,7 @@ class Traffic extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'ts_name' => 'Ts Name',
+            'ts_name' => 'Traffic Source Name',
             'domain_name' => 'Domain Name',
         ];
     }

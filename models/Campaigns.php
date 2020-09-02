@@ -51,7 +51,7 @@ class Campaigns extends \yii\db\ActiveRecord
             'clicks' => 'Clicks',
             'leads' => 'Leads',
             'conversion_rate' => 'Conversion Rate',
-            'trafic_id' => 'Trafic ID',
+            'trafic_id' => 'Traffic',
         ];
     }
 
