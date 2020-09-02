@@ -5,10 +5,13 @@ namespace app\commands;
 use Yii;
 use yii\db\Command;
 use yii\console\Controller;
+use app\models\Traffic;
+use app\models\Campaigns;
 
 class UpdateController extends Controller{
 
     public function actionReload() {
+    	$start = microtime(true);
 
     	if ($db === null) {
             $db = Yii::$app->getDb();
@@ -47,41 +50,62 @@ class UpdateController extends Controller{
     		."\n";
 
     	*/
+
+    	echo "Reading took: ".round(microtime(true) - $start, 4)." s\n";
     	echo "Update the DB..\n";
         foreach ($out as $val){
-			$post = Yii::$app->db->createCommand('SELECT * FROM traffic WHERE ts_name=:ts_name AND domain_name=:domain_name')
+			/*
+			old version of update script
+
+			$traffic = Yii::$app->db->createCommand('SELECT * FROM traffic WHERE ts_name=:ts_name AND domain_name=:domain_name')
 	           ->bindValue(':ts_name', $val['ts_name'])
 	           ->bindValue(':domain_name', $val['domain_name'])
 	        ->queryOne();
-			if (!$post){
+			if (!$traffic){
 				$db->createCommand('INSERT INTO traffic (ts_name,domain_name) VALUES (:ts_name,:domain_name)', [
 				    ':ts_name' => $val['ts_name'],
 				    ':domain_name' => $val['domain_name'],
 				])->execute();
+				$traffic = Yii::$app->db->createCommand('SELECT * FROM traffic WHERE ts_name=:ts_name AND domain_name=:domain_name')
+		           ->bindValue(':ts_name', $val['ts_name'])
+		           ->bindValue(':domain_name', $val['domain_name'])
+		        ->queryOne();
 			}
-
-			$post = Yii::$app->db->createCommand('SELECT * FROM traffic WHERE ts_name=:ts_name AND domain_name=:domain_name')
-	           ->bindValue(':ts_name', $val['ts_name'])
-	           ->bindValue(':domain_name', $val['domain_name'])
-	        ->queryOne();
-
 	        if ($val['leads'] != 0){
 				$rate = ($val['leads']/$val['clicks']) * 100;
 	        } else {
 	        	$rate = 0;
 	        }
-
 	        $db->createCommand('INSERT INTO campaigns (name,clicks,leads,conversion_rate,trafic_id) VALUES (:name,:clicks,:leads,:conversion_rate,:trafic_id)', [
 			    ':name' => $val['name'],
 			    ':clicks' => $val['clicks'],
 			    ':leads' => $val['leads'],
 			    ':conversion_rate' => ($rate),
-			    ':trafic_id' => $post['id'],
-			])->execute();
+			    ':trafic_id' => $traffic['id'],
+			])->execute();*/
 
+
+			// new version
+
+			$traffic = Traffic::find()->where(['ts_name' => $val['ts_name'],'domain_name' => $val['domain_name']])->one();
+			if ($traffic == NULL){
+				$model = new Traffic();
+				$model->ts_name = $val['ts_name'];
+				$model->domain_name = $val['domain_name'];
+				$model->save();
+				$traffic["id"] = $model->id;
+			} 
+			$model = new Campaigns();
+			$model->name = $val['name'];
+			$model->clicks = $val['clicks'];
+			$model->leads = $val['leads'];
+			$model->conversion_rate = ($val['leads']!=0 ? ($val['leads']/$val['clicks']) * 100 : 0);
+			$model->trafic_id = $traffic["id"];
+			$model->save();
     	}
 
     	echo "New data loaded..\n";
+    	echo "Lead time: ".round(microtime(true) - $start, 2)." s\n";
         return 1;
         
 
