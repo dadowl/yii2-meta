@@ -26,16 +26,16 @@ class m200901_171257_start_tables extends Migration
         ]);
         $this->createTable('update_log', [
             'id'   => $this->bigPrimaryKey(),
-            'time' => $this->datetime()->notNull(),
+            'logs' => $this->datetime()->notNull(),
         ]);
 
-        $this->addForeignKey(
+        /*$this->addForeignKey(
             'FK_traffic_campaigns', 
             'campaigns', 'trafic_id',                                
             'traffic', 'id', 
             'CASCADE', 
             'CASCADE'
-        );
+        );*/
     }
 
     /**
