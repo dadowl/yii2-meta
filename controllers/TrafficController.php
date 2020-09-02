@@ -8,6 +8,7 @@ use app\models\TrafficSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 
 /**
  * TrafficController implements the CRUD actions for Traffic model.
@@ -37,6 +38,7 @@ class TrafficController extends Controller
     {
         $searchModel = new TrafficSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination->pageSize = 25;
 
         return $this->render('index', [
             'searchModel' => $searchModel,

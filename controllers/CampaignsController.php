@@ -8,7 +8,6 @@ use app\models\CampaignsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\data\Pagination;
 use yii\data\ActiveDataProvider;
 
 /**
@@ -39,6 +38,7 @@ class CampaignsController extends Controller
     {
         $searchModel = new CampaignsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination->pageSize = 50;
 
         return $this->render('index', [
             'searchModel' => $searchModel,

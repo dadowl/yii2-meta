@@ -30,7 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'firstPageLabel' => 'Начало',
             'lastPageLabel' => 'Конец',
         ],
-        'pagination' => false,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
